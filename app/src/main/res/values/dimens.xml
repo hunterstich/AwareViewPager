@@ -1,0 +1,19 @@
+<resources>
+
+    <dimen name="keyline_1">16dp</dimen>
+    <dimen name="text_size_small">12sp</dimen>
+    <dimen name="large_fab_size">56dp</dimen>
+
+    //important viewPager dimens
+    <dimen name="flexible_space_image_height">250dp</dimen>
+    <dimen name="image_header_size">250dp</dimen>
+    <dimen name="header_size">375dp</dimen>
+    <dimen name="bar_height">100dp</dimen>
+    <dimen name="header_padding_left">72dp</dimen>
+    <dimen name="title_text_size">30sp</dimen>
+    <dimen name="action_bar_text_size">22sp</dimen>
+    <dimen name="action_bar_height">56dp</dimen>
+    <dimen name="small_tab_size">32dp</dimen>
+
+
+</resources>

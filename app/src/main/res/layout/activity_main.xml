@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/header_image"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/image_header_size"
+        android:scaleType="centerCrop"
+        android:adjustViewBounds="true"
+        android:src="@drawable/snowmountains_small"/>
+
+     <android.support.v4.view.ViewPager
+         android:id="@+id/view_pager"
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"/>
+
+
+
+    <RelativeLayout
+        android:id="@+id/header_box"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/header_size">
+
+        <View
+            android:id="@+id/title_background"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/bar_height"
+            android:layout_alignParentBottom="true"
+            android:background="@color/colorPrimary"/>
+
+        <LinearLayout
+            android:id="@+id/title_box"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/bar_height"
+            android:layout_above="@+id/sliding_tabs"
+            android:orientation="vertical"
+            android:gravity="center_vertical"
+            android:paddingLeft="@dimen/header_padding_left"
+            >
+
+            <TextView
+                android:id="@+id/title_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Finsteraarhorn"
+                android:textSize="@dimen/title_text_size"
+                android:fontFamily="sans-serif"
+                android:singleLine="true"
+                android:textColor="@android:color/white"
+                android:gravity="center_vertical"
+                android:paddingRight="72dp"
+                android:ellipsize="marquee"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:focusableInTouchMode="true"/>
+
+            <TextView
+                android:id="@+id/level_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Switzerland"
+                android:textColor="@color/colorAccent"/>
+
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/overflow_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:clickable="true"
+            android:focusable="true"
+            android:src="@drawable/ic_more_vert_white_24"
+            android:visibility="visible"/>
+
+
+        <com.hunterrobbert.awareviewpager.SlidingTabLayout
+            android:id="@+id/sliding_tabs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"/>
+
+    </RelativeLayout>
+
+    <FrameLayout
+        android:id="@+id/fab_layout"
+        android:layout_width="@dimen/large_fab_size"
+        android:layout_height="@dimen/large_fab_size"
+        android:clickable="true"
+        android:focusable="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="@dimen/keyline_1"
+        android:background="@drawable/cirlce">
+
+        <ImageView
+            android:id="@+id/fab_icon"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="center"
+            android:layout_gravity="center"
+            android:padding="24dp"/>
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/faux_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/action_bar_height"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:background="@android:color/transparent">
+
+        <FrameLayout
+            android:id="@+id/back_button_container"
+            android:layout_width="@dimen/action_bar_height"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/back_button_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left|center_vertical"
+                android:layout_marginLeft="@dimen/keyline_1"
+                android:src="@drawable/ic_arrow_back_white_24dp"/>
+
+            </FrameLayout>
+
+
+
+    </FrameLayout>
+
+
+
+</RelativeLayout>
