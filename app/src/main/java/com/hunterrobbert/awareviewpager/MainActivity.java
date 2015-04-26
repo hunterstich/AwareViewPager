@@ -4,6 +4,7 @@ import android.app.FragmentManager;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Outline;
+import android.graphics.Point;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -12,8 +13,9 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
+import android.view.Display;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.ViewOutlineProvider;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
@@ -30,6 +32,8 @@ public class MainActivity extends ActionBarActivity implements ViewPagerFragment
     private static final String TAG = MainActivity.class.getSimpleName();
 
     public static final String KEY_VIEW_PAGER_FRAG_TYPE_STRING = "key_view_pager_frag_type_string";
+
+    private static final int HEADER_BOTTOM_OFFSET = 100;
 
     //To add or remove viewPager fragments, add or remove titles
     int[] mViewPagerFragmentTitles = new int[] {
@@ -72,6 +76,7 @@ public class MainActivity extends ActionBarActivity implements ViewPagerFragment
     protected int mOffset = 0; //the scroll position of the fragments 0 position header.  Only changes if mPosition 0 is in view (aka header)
     protected float diffHolder = 1; //used to keep track of compact toolbar recall.
 
+
     private Handler mHandler;
 
     protected boolean mainFabShown = false;
@@ -83,15 +88,7 @@ public class MainActivity extends ActionBarActivity implements ViewPagerFragment
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //measure view sizes for reference later that don't require first being added to view hierarchy
-        mHeaderHeight = getDimPx(R.dimen.header_size);
-        mActionBarHeight = getDimPx(R.dimen.large_fab_size);
-        mMinimumFontScale = (double) getDimPx(R.dimen.action_bar_text_size) / (double) getDimPx(R.dimen.title_text_size);
-
-        mBeginTransformations = (mHeaderHeight / 4);
-
         mHandler = new Handler();
-
 
         //instantiate views
         //base views
@@ -108,9 +105,17 @@ public class MainActivity extends ActionBarActivity implements ViewPagerFragment
         mOverFlow = (ImageView) findViewById(R.id.overflow_button);
         mFab = findViewById(R.id.fab_layout);
 
+
+        //measure view sizes for reference later that don't require first being added to view hierarchy
+        setHeaderHeight(); //set the height of the header area
+        mActionBarHeight = getDimPx(R.dimen.large_fab_size);
+        mMinimumFontScale = (double) getDimPx(R.dimen.action_bar_text_size) / (double) getDimPx(R.dimen.title_text_size);
+
+        mBeginTransformations = (mHeaderHeight / 4);
+
         //set up fab and its initial position
         //the fab has to be pushed down to center itself on the line between the header image and the titlebox
-        int fabTop = getDimPx(R.dimen.header_size)
+        int fabTop = mHeaderHeight
                 - getDimPx(R.dimen.bar_height)
                 - getDimPx(R.dimen.small_tab_size)
                 - (getDimPx(R.dimen.large_fab_size)/2);
@@ -118,11 +123,9 @@ public class MainActivity extends ActionBarActivity implements ViewPagerFragment
         layoutParams.setMargins(0,fabTop,getDimPx(R.dimen.keyline_1),0);
         clipAndElevate(mFab, getResources().getInteger(R.integer.fab_elevation));
 
-
         int backgroundHeight = getDimPx(R.dimen.bar_height) + getDimPx(R.dimen.small_tab_size);
-        ViewGroup.LayoutParams titleBackgroundParams = mTitleBackground.getLayoutParams();
+        RelativeLayout.LayoutParams titleBackgroundParams = (RelativeLayout.LayoutParams) mTitleBackground.getLayoutParams();
         titleBackgroundParams.height = backgroundHeight;
-        mTitleBackground.requestLayout();
 
         //set viewpager adapter
         mFragmentViewPagerAdapter = new FragmentViewPagerAdapter(getFragmentManager());
@@ -152,7 +155,6 @@ public class MainActivity extends ActionBarActivity implements ViewPagerFragment
     public void onFragmentHeaderChanged(int position, int offset, int dx, int dy) {
         mGeneralScrollWatch = mGeneralScrollWatch + dy; //used in comparison with mPreviousScrollPosition to determine scroll direction
         mPosition = position; //first visible child in the fragments recyclerView
-
         //Calculate the maximum amounts view should be scrolled
         mTitleTop = mFlexibleSpaceSize + ((mTitleBoxOriginalSize - (mTitleText.getHeight() + mSubtitleText.getHeight())) / 2) - ((mActionBarHeight - mTitleText.getHeight()) / 2);
         mOverFlowTop = (mFlexibleSpaceSize + (mTitleBoxOriginalSize/2)) - ((mActionBarHeight - mOverFlow.getHeight())/2);
@@ -166,6 +168,8 @@ public class MainActivity extends ActionBarActivity implements ViewPagerFragment
 
             float newYPosition = Math.min(mOffset, mTitleTop);
             float newTabYPosition = Math.min(mOffset, mTabTop);
+
+            Log.d(TAG, "newYPos: " + newYPosition + ", newTabYPosition: " + newTabYPosition + ", mFlexibleSpaceSize: " + mFlexibleSpaceSize + ", mHeader.getTransY: " + mHeader.getTranslationY());
 
             if (mOffset >= 0) {
 
@@ -423,6 +427,39 @@ public class MainActivity extends ActionBarActivity implements ViewPagerFragment
 
     }
 
+
+    /**
+     * Set the height of the header area.
+     * Check to make sure the default size (set in dimens) is not larger than the height of the screen. This will usually be the case
+     * if the screen has been rotated to landscape.  If the height isn't adjusted, the mHeader RelativeLayout will either clip or push its views
+     * up onto the screen causing an inconsistency in the ViewPager's RecyclerView's header size and this activity's header size.
+     *
+     * If the display height is larger than the default dimension height, set the header size to the display height with a small offset
+     * */
+    private void setHeaderHeight() {
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+
+        int displayHeight = size.y;
+        int defaultDimenHeight = getDimPx(R.dimen.header_size);
+
+        if (defaultDimenHeight > displayHeight) {
+            //set new height
+            RelativeLayout.LayoutParams headerParams = (RelativeLayout.LayoutParams) mHeader.getLayoutParams();
+
+            mHeaderHeight = displayHeight - HEADER_BOTTOM_OFFSET;
+            headerParams.height = mHeaderHeight;
+        } else {
+            mHeaderHeight = defaultDimenHeight;
+        }
+
+    }
+
+    public int getHeaderHeight() {
+        return mHeaderHeight;
+    }
+
     //measure view positions that are dependent on first adding them to the view hierarchy.
     private void adjustLayoutSetConstants() {
         final int activity_vertical_margin = getDimPx(R.dimen.keyline_1);
@@ -432,13 +469,13 @@ public class MainActivity extends ActionBarActivity implements ViewPagerFragment
             @Override
             public void onGlobalLayout() {
 
-
                 float topY = mTitleBox.getY();
 
                 //These are being set for reference
                 mTitleBoxOriginalSize = mTitleBox.getHeight();
                 mFlexibleSpaceSize = Math.round(topY);
                 mCompactToolbarSize = mActionBarHeight + mSlidingTabLayout.getHeight();
+
 
                 //translate the overflow menu to the correct position
                 float boxMiddle = topY + (mTitleBoxOriginalSize / 2);
@@ -453,6 +490,7 @@ public class MainActivity extends ActionBarActivity implements ViewPagerFragment
         });
 
     }
+
 
     public void showFab(View fabView) {
         ViewPropertyAnimator.animate(fabView).cancel();

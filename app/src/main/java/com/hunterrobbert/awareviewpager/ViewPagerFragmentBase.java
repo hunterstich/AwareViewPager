@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 
 
 /**
@@ -25,10 +26,6 @@ public class ViewPagerFragmentBase extends Fragment {
     public static final String BROADCAST_KEY_SCROLL_POSITION = "key_scroll_position";
     public static final String BROADCAST_KEY_OFFSET_POSITION = "key_offset_position";
 
-    //mHeaderHeight is the size of position=0, the header, of the recyclerView. In the main activity, this space is occupied by
-    //the header image, titlebox, and sliding tabs
-    protected int mHeaderHeight;
-
     protected ObservableRecyclerView mRecyclerView;
     protected LinearLayoutManager mLinearLayoutManager;
 
@@ -43,10 +40,7 @@ public class ViewPagerFragmentBase extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //size of the total header above the first real item in the recyclerview.  headerheight will be used to create the
-        //1st empty cell in the recyclerview which will push the first cell with real content below any views in the lesson
-        //activity's header
-        mHeaderHeight = getResources().getDimensionPixelSize(R.dimen.header_size);
+
     }
 
     @Override
@@ -69,7 +63,7 @@ public class ViewPagerFragmentBase extends Fragment {
 
 
     protected int getHeaderHeight() {
-        return mHeaderHeight;
+        return ((MainActivity) getActivity()).getHeaderHeight();
     }
 
     protected void setupRecyclerView(RecyclerView recyclerView) {
@@ -167,7 +161,7 @@ public class ViewPagerFragmentBase extends Fragment {
             //is not enough to hide the header, update the adjacent fragments to
             //the proper value
             } else if (position == 0){
-                mLinearLayoutManager.scrollToPositionWithOffset(1,mHeaderHeight - offset);
+                mLinearLayoutManager.scrollToPositionWithOffset(1,getHeaderHeight() - offset);
 
             //If the current fragments header has been completely scrolled off the screen, update the adjacent fragments
             //to have item 1 (which is the first item after the header. also the first cell containing real content) to be
