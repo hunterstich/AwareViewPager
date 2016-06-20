@@ -41,7 +41,7 @@
             android:orientation="vertical"
             android:gravity="center_vertical"
             android:layout_above="@+id/sliding_tabs"
-            android:paddingLeft="@dimen/header_padding_left">
+            android:paddingLeft="@dimen/header_padding">
 
             <TextView
                 android:id="@+id/title_text"
@@ -53,7 +53,7 @@
                 android:singleLine="true"
                 android:textColor="@android:color/white"
                 android:gravity="center_vertical"
-                android:paddingRight="72dp"
+                android:paddingRight="@dimen/header_padding"
                 android:ellipsize="marquee"
                 android:marqueeRepeatLimit="marquee_forever"
                 android:focusableInTouchMode="true"/>
@@ -127,7 +127,7 @@
                 android:layout_marginLeft="@dimen/keyline_1"
                 android:src="@drawable/ic_arrow_back_white_24dp"/>
 
-            </FrameLayout>
+        </FrameLayout>
 
 
 

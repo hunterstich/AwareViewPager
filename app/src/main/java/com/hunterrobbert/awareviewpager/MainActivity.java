@@ -193,7 +193,7 @@ public class MainActivity extends ActionBarActivity implements ViewPagerFragment
                 ViewHelper.setAlpha(mSubtitleText, (float) alphaScale);
 
                 //titleBox parallax factor
-                double parallaxScale = getScaleBetweenRange(mOffset,mBeginTransformations,mTabTop,1,(mTitleTop /mTabTop));
+                double parallaxScale = getScaleBetweenRange(mOffset,mBeginTransformations,mTabTop,1,(mTitleTop / mTabTop));
                 mTitleBox.setTranslationY((float) (-newTabYPosition * parallaxScale));
 
                 //overflow parallax factor
@@ -244,7 +244,6 @@ public class MainActivity extends ActionBarActivity implements ViewPagerFragment
                     mHeader.setTranslationY((float) -headerTrans);
                     mFauxToolbar.setTranslationY((float) -headerTrans);
                 }
-
 
 
             } else {

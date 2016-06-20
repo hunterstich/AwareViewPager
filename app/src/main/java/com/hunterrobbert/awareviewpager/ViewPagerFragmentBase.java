@@ -13,7 +13,7 @@ import android.util.Log;
 
 
 /**
- * Handles keeping track of its parent fragment recyclerView and it's scroll position in relation to other fragments in the viewPager
+ * Handles keeping track of its child fragment recyclerView and it's scroll position in relation to other fragments in the viewPager
  */
 
 public class ViewPagerFragmentBase extends Fragment {
